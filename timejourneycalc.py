@@ -109,7 +109,7 @@ class Menu:
                             #print(month_hours) just for verify
                             
                         elif menuopt_2 == 3:
-                            print(f"O total de horas trabalhadas neste mes foi de: {Monthcalc(month_hours)}\n")
+                            print(f"O total de horas trabalhadas neste mes foi: {Monthcalc(month_hours)}\n")
                             
     def calc_day(self):
                         entr = input("\nQue horas voce chegou no trabalho? ")
