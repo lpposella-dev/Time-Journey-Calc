@@ -2,7 +2,7 @@ import time
 
 class Dayhour:
     
-    def __init__(self, entr, salm, valm, said):
+    def __init__(self, entr: str, salm: str, valm: str, said: str):
     
         self.entr_hora = (entr)
         self.salm_hora = (salm)
@@ -37,7 +37,7 @@ class Timecalc:
         pass
     
     @staticmethod
-    def sum_hour(take, over):
+    def sum_hour(take: str, over: str):
         take_split = take.split(":")
         over_split = over.split(":")
         
@@ -49,30 +49,31 @@ class Timecalc:
         general_hour = int(take_hour) + int(over_hour)
         general_min = int(take_min) + int(over_min)
         
-        if general_min >= 60:
-            general_min -= 60
-            general_hour += 1
+        hours_from_minutes = general_min // 60
+        minutes_remaining = general_min % 60
+        
+        general_hour += hours_from_minutes
+        general_min = minutes_remaining
             
         return f"{general_hour:02}:{general_min:02}"
         
     @staticmethod
     def subtract_hour(take, over):
-        take_split = take.split(":")
-        over_split = over.split(":")
+        take_total_min = int(take.split(":")[0]) * 60 + int(take.split(":")[1])
+        over_total_min = int(over.split(":")[0]) * 60 + int(over.split(":")[1])
         
-        take_hour = take_split[0]
-        take_min = take_split[1]
-        over_hour = over_split[0]
-        over_min = over_split[1]
+        general_total_min = take_total_min - over_total_min
         
-        general_hour = int(take_hour) - int(over_hour)
-        general_min = int(take_min) - int(over_min)
+        is_negative = general_total_min < 0
+        abs_min = abs(general_total_min)
         
-        if general_min < 0:
-            general_min += 60
-            general_hour -= 1
-            
-        return f"{general_hour:02}:{general_min:02}"
+        general_hour = abs_min // 60
+        general_min = abs_min % 60
+        
+        # Adiciona o sinal de volta apenas se for negativo
+        sign = "-" if is_negative else ""
+        
+        return f"{sign}{general_hour:02}:{general_min:02}"
         
 class Menu:
     
@@ -92,31 +93,42 @@ class Menu:
                     menuopt = 0
             
                 if menuopt == 2:
+                    workdays = int(input("quantos dias letivos há no mes que voce quer calcular? "))
                     month_hours = []
                     menuopt_2 = 0
                     while menuopt_2 != 3:
                         menuopt_2 = int(input("1 - Incluir dia\n2 - Pular dia\n3 - Fechar mes\n"))
                 
                         if menuopt_2 == 1:
-                            
+    
                             current_day = self.calc_day()
                             month_hours.append(str(current_day))
-                            #print(month_hours) just for verify
                             
                         elif menuopt_2 == 2:
                             
                             month_hours.append("00:00")
-                            #print(month_hours) just for verify
                             
                         elif menuopt_2 == 3:
-                            print(f"O total de horas trabalhadas neste mes foi: {Monthcalc(month_hours)}\n")
+                            
+                            workable_days = workdays * 8
+                            workable_hours = f"{workable_days}:00"
+                            horas_totais = Monthcalc(month_hours)
+                            horas_diff = Timecalc.subtract_hour(workable_hours, str(horas_totais))
+                            
+                            if "-" in horas_diff:
+                                horas_diff = horas_diff.replace("-", "")
+                                print(f"Horas extras: {horas_diff}\n")
+                            else:
+                                print(f"Horas faltantes: {horas_diff}\n")
+                                
+                            print(f"Total de horas trabalhadas: {horas_totais}\n")
                             
     def calc_day(self):
-                        entr = input("\nQue horas voce chegou no trabalho? ")
-                        salm = input("\nQue horas voce saiu para almoço? ")
-                        valm = input("\nQue horas voce voltou do almoço? ")
-                        said = input("\nQue horas voce foi embora do trabalho? ")
+        entr = input("\nQue horas voce chegou no trabalho? ")
+        salm = input("\nQue horas voce saiu para almoço? ")
+        valm = input("\nQue horas voce voltou do almoço? ")
+        said = input("\nQue horas voce foi embora do trabalho? ")
                 
-                        return Dayhour(entr, salm, valm, said)
+        return Dayhour(entr, salm, valm, said)
                         
 Menu()
