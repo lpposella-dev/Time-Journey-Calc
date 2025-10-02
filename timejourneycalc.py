@@ -55,5 +55,21 @@ class Timecalc:
             
         return f"{general_hour:02}:{general_min:02}"
         
-minha_hora = Dayhour("08:10", "11:55", "13:07", "17:00")
-print(minha_hora)
+menuopt = 0
+
+while menuopt != 3:
+    menuopt = int(input("1 - Calcular Dia\n2 - Calcular Mes\n3 - Sair\n"))
+    
+    if menuopt > 3 or menuopt <= 0:  #error handler
+        print("Escolha uma opção do menu!")
+        menuopt = 0
+    else:
+        if menuopt == 1:
+            entr = input("\nQue horas voce chegou no trabalho? ")
+            salm = input("\nQue horas voce saiu para almoço? ")
+            valm = input("\nQue horas voce voltou do almoço? ")
+            said = input("\nQue horas voce foi embora do trabalho? ")
+        
+            print(f"\nNeste dia voce trabalhou: {Dayhour(entr, salm, valm, said)} horas\n")
+            time.sleep(2)
+            menuopt = 0
